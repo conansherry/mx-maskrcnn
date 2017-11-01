@@ -72,8 +72,6 @@ def train_rpn(network, dataset, image_set, root_path, dataset_path,
         arg_params, aux_params = load_param(prefix, begin_epoch, convert=True)
     else:
         arg_params, aux_params = load_param(pretrained, epoch, convert=True)
-        init = mx.init.Xavier(factor_type="in", rnd_type='gaussian', magnitude=2)
-        init_internal = mx.init.Normal(sigma=0.01)
         for k in sym.list_arguments():
             if k in data_shape_dict:
                 continue
@@ -81,13 +79,13 @@ def train_rpn(network, dataset, image_set, root_path, dataset_path,
                 print 'init', k
                 arg_params[k] = mx.nd.zeros(shape=arg_shape_dict[k])
                 if not k.endswith('bias'):
-                    init_internal(k, arg_params[k])
+                    arg_params[k] = mx.random.normal(0, 0.01, shape=arg_params[k].shape)
 
         for k in sym.list_auxiliary_states():
             if k not in aux_params:
                 print 'init', k
                 aux_params[k] = mx.nd.zeros(shape=aux_shape_dict[k])
-                init(k, aux_params[k])
+                aux_params[k] = mx.random.normal(0, 0.01, shape=aux_params[k].shape)
 
     # check parameter shapes
     for k in sym.list_arguments():
