@@ -575,3 +575,9 @@ def get_resnet_fpn_maskrcnn(num_classes=config.NUM_CLASSES):
     # group output
     group = mx.symbol.Group(rcnn_group+mask_group)
     return group
+
+if __name__ == "__main__":
+    network = get_resnet_fpn_mask_test()
+
+    tmp = mx.viz.plot_network(network, save_format='png')
+    tmp.view()
